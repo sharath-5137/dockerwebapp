@@ -15,9 +15,16 @@ services:
     ports:
       - "2222:8080"
     deploy:
-      replicas: 4
+      replicas: 2
       restart_policy:
         condition: on-failure
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+        reservations:
+          cpus: "0.5"
+          memory: 512M  
     depends_on:
       - devopsdb
     networks:
