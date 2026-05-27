@@ -2,25 +2,36 @@ version: "3.9"
 
 services:
   devopsdb:
-    image: shaikmustafa/automation:db
+    image: sgsk5137/dbimage:automation
     ports:
       - "3306:3306"
-    deploy:
-      replicas: 3
     networks:
-      - mynetwork
-
+      - app_network
+    volumes:
+      - db_vol:/var/lib/mysql
+      
   application:
-    image: shaikmustafa/automation:app
+    image: sgsk5137/appimage:automation
     ports:
-      - "1111:8080"
+      - "2222:8080"
     deploy:
-      replicas: 3
+      replicas: 4
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "4"
+          memory: 2G
+        reservations:
+          cpus: "2"
+          memory: 1.5G
     depends_on:
       - devopsdb
     networks:
-      - mynetwork
+      - app_network
 
 networks:
-  mynetwork:
+  app_network:
     driver: overlay
+volumes:
+  db_vol:
